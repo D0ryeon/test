@@ -82,6 +82,36 @@ public class LogonDBBean {
 		return x;
 	}
 	
+	public int confirmId(String id) throws Exception{
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String dbpasswd="";
+		int x=-1;
+		
+		try {
+			conn=getConnection();
+			
+			pstmt=conn.prepareStatement(
+					"select id from MEMBERS where id = ?");
+			pstmt.setString(1, id);
+			rs=pstmt.executeQuery();
+			
+			if(rs.next())
+				x=1; 	// 해당 아이디 있음
+			else
+				x=-1;	// 해당 아이디 없음
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}finally {
+		if(rs != null) try { rs.close(); } catch(SQLException ex) {}
+		if(pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+		if(conn != null) try { conn.close(); } catch(SQLException ex) {}
+	}
+		return x;
+	}
+	
+	
 	//updateMember.jsp에서 수정폼에 가입된 회원의 정보를 보여줄 때 사용.
 	public LogonDataBean getMember(String id)throws Exception{
 		Connection conn = null;
@@ -126,7 +156,7 @@ public class LogonDBBean {
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(
-					"update MEMBERS set passwd = ?, name = ?, blog = ? where id = ?");
+					"update MEMBERS set passwd = ?, name = ?, email= ?, blog = ? where id = ?");
 			pstmt.setString(1, member.getPasswd());
 			pstmt.setString(2, member.getName());
 			pstmt.setString(3, member.getEmail());
