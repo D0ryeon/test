@@ -1,6 +1,7 @@
 package logon;
 
 import java.sql.*;
+import java.util.Vector;
 
 public class LogonDBBean {
 		//singleton pattern
@@ -30,7 +31,7 @@ public class LogonDBBean {
 			conn = getConnection();
 			
 			pstmt = conn.prepareStatement(
-					"insert into MEMBERS values (?,?,?,?,?,?,?,?)");
+					"insert into MEMBERS(id,passwd,name,jumin1,jumin2,email,blog,reg_date,zipcode,address,address2) values (?,?,?,?,?,?,?,?,?,?,?)");
 			pstmt.setString(1, member.getId());
 			pstmt.setString(2, member.getPasswd());
 			pstmt.setString(3, member.getName());
@@ -39,6 +40,10 @@ public class LogonDBBean {
 			pstmt.setString(6, member.getEmail());
 			pstmt.setString(7, member.getBlog());
 			pstmt.setTimestamp(8, member.getReg_date());
+			pstmt.setString(9, member.getZipcode());
+			pstmt.setString(10, member.getAddress());
+			pstmt.setString(11, member.getAddress2());
+			
 			
 			pstmt.executeUpdate();
 		}catch(Exception ex) {
@@ -136,6 +141,10 @@ public class LogonDBBean {
 				member.setEmail(rs.getString("email"));
 				member.setBlog(rs.getString("blog"));
 				member.setReg_date(rs.getTimestamp("reg_date"));
+				member.setZipcode(rs.getString("zipcode"));
+				member.setAddress(rs.getString("address"));
+				member.setAddress2(rs.getString("address2"));
+				
 			}
 					
 		}catch(Exception ex) {
@@ -156,12 +165,16 @@ public class LogonDBBean {
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(
-					"update MEMBERS set passwd = ?, name = ?, email= ?, blog = ? where id = ?");
+					"update MEMBERS set passwd = ?, name = ?, email= ?, blog = ? ,zipcode = ?,address = ?, address2 = ? where id = ?");
 			pstmt.setString(1, member.getPasswd());
 			pstmt.setString(2, member.getName());
 			pstmt.setString(3, member.getEmail());
 			pstmt.setString(4, member.getBlog());
-			pstmt.setString(5, member.getId());
+			pstmt.setString(5, member.getZipcode());
+			pstmt.setString(6, member.getAddress());
+			pstmt.setString(7, member.getAddress2());
+			pstmt.setString(8, member.getId());
+			
 			
 			pstmt.executeUpdate();
 		}catch(Exception ex) {
@@ -207,6 +220,98 @@ public class LogonDBBean {
 		return x;
 	}
 	
+	public Vector zipcodeRead(String area3) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Vector vecList = new Vector();
+		try {
+			con= getConnection();
+			String strQuery="select * from zipcode where area3 like '%"+area3+"%'";
+			pstmt = con.prepareStatement(strQuery);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				ZipcodeBean tempZipcode = new ZipcodeBean();
+				tempZipcode.setZipcode(rs.getString("zipcode"));
+				tempZipcode.setArea1(rs.getString("area1"));
+				tempZipcode.setArea2(rs.getString("area2"));
+				tempZipcode.setArea3(rs.getString("area3"));
+				tempZipcode.setArea4(rs.getString("area4"));
+				vecList.addElement(tempZipcode);	
+			}
+		}catch(Exception ex) {
+			System.out.println("Exception"+ex);
+		}finally {
+			if(rs != null) try {rs.close(); } catch(SQLException ex) {}
+			if(pstmt != null) try {pstmt.close(); } catch(SQLException ex) {}
+			if(con != null) try {con.close(); } catch(SQLException ex) {}
+		}
+		return vecList;
+	}
+	
+	public LogonDataBean findId(String name, String jumin1,String jumin2)throws Exception{
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		LogonDataBean member = null;
+		int x=0;
+		
+		try {
+			con= getConnection();
+			pstmt=con.prepareStatement("select id from MEMBERS where name=? and jumin1=? and jumin2=?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, jumin1);
+			pstmt.setString(3, jumin2);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				member = new LogonDataBean();
+				member.setId(rs.getString("id"));
+			}else {
+				
+			}
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}finally{
+			if(rs != null) try {rs.close(); } catch(SQLException ex) {}
+			if(pstmt != null) try {pstmt.close(); } catch(SQLException ex) {}
+			if(con != null) try {con.close(); } catch(SQLException ex) {}
+		}
+		return member;	
+	}
+	
+	 public LogonDataBean findPasswd(String id, String name, String jumin1) throws Exception{
+		 Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			LogonDataBean member = null;
+			int x=0;
+			
+			try {
+				con= getConnection();
+				pstmt=con.prepareStatement("select passwd from MEMBERS where id=? and name=? and jumin1=?");
+				pstmt.setString(1, id);
+				pstmt.setString(2, name);
+				pstmt.setString(3, jumin1);
+				
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					member = new LogonDataBean();
+					member.setPasswd(rs.getString("passwd"));
+				}else {
+					
+				}
+			}catch(Exception ex) {
+				ex.printStackTrace();
+			}finally{
+				if(rs != null) try {rs.close(); } catch(SQLException ex) {}
+				if(pstmt != null) try {pstmt.close(); } catch(SQLException ex) {}
+				if(con != null) try {con.close(); } catch(SQLException ex) {}
+			}
+			return member;	
+		}
+		
+	 
 	
 	
 }

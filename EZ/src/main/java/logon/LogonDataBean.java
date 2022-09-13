@@ -12,6 +12,24 @@ private String jumin2;
 private String email;
 private String blog;
 private Timestamp reg_date;
+private String zipcode;
+private String address;
+private String address2;
+
+
+public String getAddress2() {
+	return address2;
+}
+
+
+public String getZipcode() {
+	return zipcode;
+}
+
+public String getAddress() {
+	return address;
+}
+
 public String getId() {
 	return id;
 }
@@ -59,5 +77,15 @@ public void setBlog(String blog) {
 }
 public void setReg_date(Timestamp reg_date) {
 	this.reg_date = reg_date;
+}
+public void setZipcode(String zipcode) {
+	this.zipcode = zipcode;
+}
+public void setAddress(String address) {
+	this.address = address;
+}
+
+public void setAddress2(String address2) {
+	this.address2 = address2;
 }
 }

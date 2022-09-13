@@ -54,7 +54,8 @@ function checkIt(){
 			<td colspan="3" bgcolor="<%= title_c %>" align="center">
 			<input type="submit" name="Submit" value="로그인" />
 			<input type="button" value="회원가입" onclick="javascript:window.location='inputForm.jsp'">
-				</td></tr>
+			<input type="button" value="ID/PW찾기" onclick="javascript:window.location='findForm.jsp'"></TD>	
+				</tr>
 	</table>
 	</form>
 <% }else{ %>
